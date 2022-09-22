@@ -1,0 +1,162 @@
+import java.util.Scanner;
+
+//Page 310 Exercise 8.09
+//Enter a row (0, 1, 2) for player
+//Enter a column (0, 1, 2) for player
+public class TicTacToe {
+	public static void main(String[] args) {
+		char[][] board = new char[3][3];
+		boolean curPlayer;
+		curPlayer = false;
+		
+		//Set initial values and display blank board
+		board = configureBoard(board);
+		
+		//Play
+		do {
+			//Set next players turn
+			if(curPlayer)
+				curPlayer = false;
+			else
+				curPlayer = true;
+			
+			//Get curPlayer's move and update board
+			board = userTurn(board, curPlayer);
+			
+			//Display updated board
+			displayBoard(board);
+		}while(!isWin(board, curPlayer));
+	}
+	
+	public static char[][] userTurn(char[][] board, boolean curPlayer) {
+		Scanner input = new Scanner(System.in);
+		char playerSign;
+		int playerChoice, r, c;
+		
+		//Set player sign (X/O)
+		if(curPlayer)
+			playerSign = 'X';
+		else
+			playerSign = 'O';
+		
+		//Get player input
+		do {
+			do {
+				System.out.println("Enter a row (0, 1, 2) for player " + playerSign + ": ");
+				r = (int)input.nextDouble();
+			}while(r < 0 || r > 2);
+			do {
+				System.out.println("Enter a column (0, 1, 2) for player " + playerSign + ": ");
+				c = (int)input.nextDouble();
+			}while(c < 0 || c > 2);
+			if(board[r][c] != ' ')
+				System.out.println("Space unavailable. Try again");
+		}while(board[r][c] != ' ');
+		
+		//Update board
+		board[r][c] = playerSign;
+		
+		return board;
+	}
+	
+	public static boolean isWin(char[][] board, boolean curPlayer) {
+		int r, c, i;
+		boolean win;
+		char playerSign;
+		win = false;
+		
+		//Set player sign (X/O)
+		if(curPlayer)
+			playerSign = 'X';
+		else
+			playerSign = 'O';
+		
+		//	O X O
+		//	O X O
+		//	O X O
+		for(c = 0; c < board[0].length; c++) {
+			if(board[0][c] == board[1][c] && board[1][c] == board[2][c] && board[0][c] != ' ') {
+				win = true;
+				break;
+			}
+		}
+
+		//	O O O
+		//	X X X
+		//	O O O
+		if(!win) {
+			for(r = 0; r < board.length; r++) {
+				if(board[r][0] == board[r][1] && board[r][1] == board[r][2] && board[r][0] != ' ') {
+					win = true;
+					break;
+				}
+			}
+		}
+		
+			//	O
+			//	 O
+			//	  O
+		if(board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ')
+			win = true;
+			//	  O
+			//	 O
+			//	O
+		else if(board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ')
+			win = true;
+		
+		//Win or tie
+		if(win) {
+			System.out.println("Player " + playerSign + " won");
+		}
+		else if(!win && isBoardFull(board)) {
+			System.out.println("Tie");
+			win = true;
+		}
+		
+		return win;
+	}
+	
+	public static boolean isBoardFull(char[][] board) {
+		int r, c;
+		
+		//Set initial board values
+		for(r = 0; r < board.length; r++) {
+			for(c = 0; c < board[0].length; c++) {
+				if(board[r][c] == ' ')
+					return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static char[][] configureBoard(char[][] board){
+		int r, c;
+		
+		//Set initial board values
+		for(r = 0; r < board.length; r++)
+			for(c = 0; c < board[0].length; c++)
+				board[r][c] = ' ';
+		
+		//Display initial board
+		displayBoard(board);
+		
+		return board;
+	}
+	
+	public static void displayBoard(char[][] board) {
+		int r, c;
+		
+		for(r = 0; r < board.length; r++) {
+			System.out.println("-------------");
+			System.out.print("| ");
+			for(c = 0; c < board[0].length; c++) {
+				System.out.print(board[r][c] + " | ");
+			}
+			System.out.println();
+		}
+		System.out.println("-------------");
+	}
+	
+	
+}
